@@ -1,0 +1,26 @@
+{
+  "id": "faktury_as_is",
+  "name": "Obsługa faktur przychodzących (AS-IS)",
+  "lanes": [
+    {"id": "ksiegowosc", "name": "Księgowość"},
+    {"id": "kierownik", "name": "Kierownik działu"}
+  ],
+  "elements": [
+    {"id": "start", "type": "startEvent", "name": "Faktura wpływa na skrzynkę", "lane": "ksiegowosc"},
+    {"id": "t_pobierz", "type": "userTask", "name": "Pobranie załącznika z maila", "lane": "ksiegowosc"},
+    {"id": "t_przepisz", "type": "userTask", "name": "Ręczne przepisanie pól do arkusza", "lane": "ksiegowosc"},
+    {"id": "g_kwota", "type": "exclusiveGateway", "name": "Kwota > 5000 zł?", "lane": "ksiegowosc"},
+    {"id": "t_akcept", "type": "userTask", "name": "Akceptacja kierownika", "lane": "kierownik"},
+    {"id": "t_ksieguj", "type": "userTask", "name": "Zaksięgowanie w systemie", "lane": "ksiegowosc"},
+    {"id": "end", "type": "endEvent", "name": "Faktura zaksięgowana", "lane": "ksiegowosc"}
+  ],
+  "flows": [
+    {"from": "start", "to": "t_pobierz"},
+    {"from": "t_pobierz", "to": "t_przepisz"},
+    {"from": "t_przepisz", "to": "g_kwota"},
+    {"from": "g_kwota", "to": "t_akcept", "name": "tak"},
+    {"from": "g_kwota", "to": "t_ksieguj", "name": "nie"},
+    {"from": "t_akcept", "to": "t_ksieguj"},
+    {"from": "t_ksieguj", "to": "end"}
+  ]
+}

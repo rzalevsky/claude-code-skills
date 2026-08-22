@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_faktury_as_is" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-from-prose" exporterVersion="1.0">
+  <bpmn:process id="faktury_as_is" name="Obsługa faktur przychodzących (AS-IS)" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_faktury_as_is">
+      <bpmn:lane id="ksiegowosc" name="Księgowość">
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_pobierz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_przepisz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>g_kwota</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>t_ksieguj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="kierownik" name="Kierownik działu">
+        <bpmn:flowNodeRef>t_akcept</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start" name="Faktura wpływa na skrzynkę">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="t_pobierz" name="Pobranie załącznika z maila">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="t_przepisz" name="Ręczne przepisanie pól do arkusza">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="g_kwota" name="Kwota &gt; 5000 zł?">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="t_akcept" name="Akceptacja kierownika">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="t_ksieguj" name="Zaksięgowanie w systemie">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="end" name="Faktura zaksięgowana">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="start" targetRef="t_pobierz" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="t_pobierz" targetRef="t_przepisz" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="t_przepisz" targetRef="g_kwota" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="g_kwota" targetRef="t_akcept" name="tak" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="g_kwota" targetRef="t_ksieguj" name="nie" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="t_akcept" targetRef="t_ksieguj" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="t_ksieguj" targetRef="end" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_1">
+    <bpmndi:BPMNPlane id="Plane_1" bpmnElement="faktury_as_is">
+      <bpmndi:BPMNShape id="ksiegowosc_di" bpmnElement="ksiegowosc" isHorizontal="true">
+        <dc:Bounds x="110" y="80" width="1382" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="kierownik_di" bpmnElement="kierownik" isHorizontal="true">
+        <dc:Bounds x="110" y="200" width="1382" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start" isMarkerVisible="false">
+        <dc:Bounds x="160" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="140" y="164" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_pobierz_di" bpmnElement="t_pobierz">
+        <dc:Bounds x="286" y="100" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_przepisz_di" bpmnElement="t_przepisz">
+        <dc:Bounds x="516" y="100" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_kwota_di" bpmnElement="g_kwota" isMarkerVisible="true">
+        <dc:Bounds x="746" y="115" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="726" y="171" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_akcept_di" bpmnElement="t_akcept">
+        <dc:Bounds x="886" y="220" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_ksieguj_di" bpmnElement="t_ksieguj">
+        <dc:Bounds x="1116" y="100" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end" isMarkerVisible="false">
+        <dc:Bounds x="1346" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1326" y="164" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="196" y="140" />
+        <di:waypoint x="286" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="426" y="140" />
+        <di:waypoint x="516" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="656" y="140" />
+        <di:waypoint x="746" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="796" y="140" />
+        <di:waypoint x="841" y="140" />
+        <di:waypoint x="841" y="260" />
+        <di:waypoint x="886" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="796" y="140" />
+        <di:waypoint x="1116" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="1026" y="260" />
+        <di:waypoint x="1071" y="260" />
+        <di:waypoint x="1071" y="140" />
+        <di:waypoint x="1116" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1256" y="140" />
+        <di:waypoint x="1346" y="140" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

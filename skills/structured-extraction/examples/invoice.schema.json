@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Invoice intake record",
+  "type": "object",
+  "required": ["counterparty", "amount", "currency", "due_date", "invoice_number"],
+  "additionalProperties": false,
+  "properties": {
+    "counterparty":   {"type": "string", "minLength": 2},
+    "amount":         {"type": "number", "exclusiveMinimum": 0},
+    "currency":       {"type": "string", "enum": ["PLN", "EUR", "USD"]},
+    "due_date":       {"type": "string", "format": "date"},
+    "invoice_number": {"type": "string", "minLength": 1},
+    "po_number":      {"type": ["string", "null"]}
+  }
+}
